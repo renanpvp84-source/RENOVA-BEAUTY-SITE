@@ -1,0 +1,244 @@
+@import 'tailwindcss';
+@import 'lenis/dist/lenis.css';
+
+/* -------------------------------------------------------------------------- */
+/* Tokens                                                                     */
+/* Paleta tirada do material do salão: preto da parede, rosé do logotipo,     */
+/* dourado do letreiro, marfim dos espelhos.                                  */
+/* -------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #110e0d;
+  --color-ink-soft: #1b1614;
+  --color-bone: #f3ece3;
+  --color-paper: #faf6f0;
+  --color-sand: #e8dccd;
+  --color-champagne: #e4c7b6;
+  --color-gold: #c79e63;
+  --color-bronze: #7a5036;
+  --color-stone: #6b5f56;
+  --color-mist: #b3a79c;
+
+  --font-display: var(--font-bodoni), 'Bodoni MT', Didot, 'Times New Roman', serif;
+  --font-sans: var(--font-jost), 'Century Gothic', 'Avenir Next', system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Base                                                                       */
+/* -------------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-padding-top: 4.5rem;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-champagne);
+    color: var(--color-ink);
+  }
+
+  /* Foco visível com contraste nos dois temas. */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring, var(--color-bronze));
+    outline-offset: 3px;
+  }
+
+  [data-theme='dark'] {
+    --focus-ring: var(--color-champagne);
+  }
+
+  [data-theme='light'] {
+    --focus-ring: var(--color-bronze);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  dialog {
+    max-width: none;
+    max-height: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Utilitários do projeto                                                     */
+/* -------------------------------------------------------------------------- */
+@utility container-site {
+  width: 100%;
+  max-width: 86rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4.2vw, 3.75rem);
+}
+
+@utility section-y {
+  padding-block: clamp(4.5rem, 9vw, 8.5rem);
+}
+
+@utility text-display-xl {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.9rem, 1.2rem + 6.9vw, 7.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+@utility text-display-lg {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 1.2rem + 3.9vw, 4.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+}
+
+@utility text-display-md {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.2rem + 1.9vw, 2.85rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* Moldura em arco: referência aos espelhos iluminados do salão. */
+@utility frame-arch {
+  border-radius: 999px 999px 0 0;
+}
+
+/* Silhueta orgânica, usada só em molduras pequenas. */
+@utility frame-pebble {
+  border-radius: 47% 53% 44% 56% / 38% 41% 59% 62%;
+}
+
+/* Aro fino deslocado em volta da moldura (o contorno do espelho). */
+@utility frame-ring {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -0.75rem;
+    border: 1px solid currentColor;
+    border-radius: inherit;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+}
+
+/* Halo de LED atrás do espelho (fundos escuros). */
+@utility halo {
+  box-shadow:
+    0 0 0 1px rgb(255 241 228 / 0.3),
+    0 0 64px 2px rgb(255 224 194 / 0.2),
+    0 0 140px 20px rgb(255 214 176 / 0.1);
+}
+
+@layer components {
+  /* Itálico de ênfase dos títulos. */
+  .accent-em em {
+    font-style: italic;
+    color: var(--accent-em, var(--color-bronze));
+  }
+
+  [data-theme='dark'] .accent-em em,
+  [data-theme='dark'].accent-em em {
+    --accent-em: var(--color-champagne);
+  }
+
+  /* Link de texto com sublinhado que cresce no hover. */
+  .link-line {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 1px;
+    padding-bottom: 0.35rem;
+    transition: background-size 0.4s var(--ease-out-expo);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .link-line:hover,
+    a:hover > .link-line {
+      background-size: 0% 1px;
+      background-position: 100% 100%;
+    }
+  }
+
+  /* Linhas do SplitText: folga para acentos e descendentes dentro da máscara. */
+  .split-line {
+    padding-block: 0.08em 0.14em;
+    margin-block: -0.08em -0.14em;
+  }
+
+  /* Espaço reservado de conteúdo que ainda falta (modo demonstração). */
+  .placeholder-hatch {
+    background-color: var(--color-sand);
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgb(122 80 54 / 0.12) 0 1px,
+      transparent 1px 12px
+    );
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Entrada do hero                                                            */
+/* O script inline em layout.tsx adiciona .motion-intro antes da primeira     */
+/* pintura (só quando o movimento é permitido). O GSAP assume ao iniciar e    */
+/* marca .hero-started; se o JS falhar, o próprio script libera o conteúdo.   */
+/* -------------------------------------------------------------------------- */
+html.motion-intro:not(.hero-started) [data-hero] {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Seções recebem foco programático ao navegar por âncora; sem contorno no bloco inteiro. */
+section[tabindex='-1']:focus-visible,
+main[tabindex='-1']:focus-visible,
+footer[tabindex='-1']:focus-visible {
+  outline: none;
+}
